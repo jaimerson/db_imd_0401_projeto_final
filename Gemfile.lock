@@ -1,0 +1,39 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    coderay (1.1.2)
+    dotenv (2.2.1)
+    method_source (0.8.2)
+    mustermann (1.0.1)
+    pg (0.21.0)
+    pry (0.11.0)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+    rack (2.0.3)
+    rack-protection (2.0.0)
+      rack
+    rake (12.1.0)
+    sequel (5.0.0)
+    sinatra (2.0.0)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.0)
+      tilt (~> 2.0)
+    tilt (2.0.8)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dotenv
+  pg
+  pry
+  rake
+  sequel
+  sinatra
+
+RUBY VERSION
+   ruby 2.4.2p198
+
+BUNDLED WITH
+   1.15.4

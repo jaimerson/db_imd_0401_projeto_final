@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table{
+        border-collapse: collapse;
+        display: block;
+        width: 100%;
+        height: 200px;
+        overflow-y: scroll;
+      }
+      table, th, td {
+        border: 1px solid;
+      }
+      pre{
+        border: 1px solid;
+        background-color: #CCC;
+        padding: 40px;
+        font-size: 13px;
+        white-space: pre-wrap;       /* Since CSS 2.1 */
+        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+      }
+
+      html,body{
+        width: 100%;
+        overflow-x: hidden;
+      }
+
+      .block{
+        width: 48%;
+        float: left;
+        padding: 1%;
+      }
+
+      .clearfix{
+        width: 98%;
+      }
+
+      .side-2{
+        background-color: #F3F3DD;
+      }
+    </style>
+  </head>
+  <body>
+    <% report.each_item do |key, result, query| %>
+      <% next unless result.any? %>
+      <div class="block">
+        <p><strong><%= key %></strong></p>
+        <table>
+          <thead>
+            <% result.first.keys.each do |header| %>
+              <th><%= header %></th>
+            <% end %>
+          </thead>
+          <tbody>
+            <% result.each do |row| %>
+              <tr>
+                <% row.values.each do |value| %>
+                  <td><%= value %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="block side-2">
+        <h3>Query:</h3>
+        <pre>
+          <%= query %>
+        </pre>
+      </div>
+      <hr class="clearfix"/>
+    <% end %>
+  </body>
+</html>

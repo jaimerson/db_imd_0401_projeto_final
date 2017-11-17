@@ -7,6 +7,18 @@ class Parlamento
     @deputados ||= fetch_from_file_or_api('deputados')
   end
 
+  def legislaturas
+    @legislaturas ||= fetch_from_file_or_api('legislaturas')
+  end
+
+  def tipos_proposicao
+    @tipos_proposicao ||= fetch_from_file_or_api('referencias/tiposProposicao')
+  end
+
+  def blocos
+    @blocos ||= fetch_from_file_or_api('blocos')
+  end
+
   def detalhes_deputados
     if File.exist?(file_path('detalhes_deputados'))
       JSON.parse(File.read(file_path('detalhes_deputados')))

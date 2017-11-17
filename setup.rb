@@ -8,6 +8,7 @@ require 'dotenv/load'
 require 'sequel'
 require 'pg'
 require 'pry'
+require 'rest-client'
 
 def database_url
   ENV.fetch('DATABASE_URL') do

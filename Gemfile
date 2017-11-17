@@ -8,3 +8,6 @@ gem 'rake'
 gem 'sequel'
 gem 'sinatra'
 gem 'pry'
+
+# parlamento
+gem 'rest-client'

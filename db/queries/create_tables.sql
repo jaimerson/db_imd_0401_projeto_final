@@ -15,7 +15,7 @@ CREATE TABLE legislaturas (
 );
 
 CREATE TABLE tipos_proposicao (
-  id_tipo_proposicao INTEGER PRIMARY KEY,
+  id_tipo_proposicao SERIAL PRIMARY KEY,
   sigla VARCHAR(20) NOT NULL,
   nome VARCHAR(255) NOT NULL,
   descricao TEXT NOT NULL

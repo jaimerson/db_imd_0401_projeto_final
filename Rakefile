@@ -1,3 +1,4 @@
+require 'erb'
 require_relative 'setup'
 require_relative 'lib/parlamento'
 
@@ -24,7 +25,8 @@ namespace :db do
   task :setup_data do
     Sequel.connect(database_url) do |db|
       puts "Connecting to #{database_url}..."
-      db.run(File.read('db/queries/insert_data.sql'))
+      query = ERB.new(File.read('db/queries/insert_data.sql')).result(binding)
+      db.run(query)
       puts 'Done!'
     end
   end

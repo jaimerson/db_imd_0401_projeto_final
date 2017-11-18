@@ -49,7 +49,7 @@ CREATE TABLE partidos (
   id_bloco INTEGER REFERENCES blocos(id_bloco) NOT NULL
 );
 
-CREATE TABLE gabinete (
+CREATE TABLE gabinetes (
   id_gabinete SERIAL PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
   predio INTEGER NOT NULL,

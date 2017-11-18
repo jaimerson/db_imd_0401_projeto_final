@@ -21,7 +21,7 @@ CREATE TABLE tipos_proposicao (
   descricao TEXT
 );
 
-CREATE TABLE proposicoes
+CREATE TABLE proposicoes (
   id_proposicao SERIAL PRIMARY KEY,
   id_tipo_proposicao INTEGER REFERENCES tipos_proposicao(id_tipo_proposicao) NOT NULL,
   numero INTEGER NOT NULL,

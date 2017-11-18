@@ -12,3 +12,6 @@
 
 ## Inserting data
 `rake db:setup_data`
+
+## Resetting database
+`rake db:reset`

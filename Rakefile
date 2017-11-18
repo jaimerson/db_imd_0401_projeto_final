@@ -26,6 +26,7 @@ namespace :db do
     Sequel.connect(database_url) do |db|
       puts "Connecting to #{database_url}..."
       query = ERB.new(File.read('db/queries/insert_data.sql')).result(binding)
+      puts query
       db.run(query)
       puts 'Done!'
     end

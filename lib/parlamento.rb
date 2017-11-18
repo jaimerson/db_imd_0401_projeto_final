@@ -54,13 +54,21 @@ class Parlamento
   end
 
   def fetch_and_save(resource, filename = file_path(resource))
-    results = fetch(resource)
+    results = to_json(fetch(resource))
 
     File.open(filename, 'w+') do |file|
-      file.write(results.to_json)
+      file.write(results)
     end
 
     results
+  end
+
+  def to_json(elements)
+    elements.map do |element|
+      element.map do |key, value|
+        [key, value] if value
+      end.compact.to_h
+    end.to_json
   end
 
   def fetch(resource)

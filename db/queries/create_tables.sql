@@ -18,7 +18,7 @@ CREATE TABLE tipos_proposicao (
   id_tipo_proposicao SERIAL PRIMARY KEY,
   sigla VARCHAR(20) NOT NULL,
   nome VARCHAR(255) NOT NULL,
-  descricao TEXT NOT NULL
+  descricao TEXT
 );
 
 CREATE TABLE proposicoes

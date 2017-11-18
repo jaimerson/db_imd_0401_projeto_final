@@ -1,3 +1,4 @@
+/* DDL */
 /* Tabelas principais */
 CREATE TABLE usuarios (
   id_usuario SERIAL PRIMARY KEY,
@@ -10,8 +11,8 @@ CREATE TABLE usuarios (
 
 CREATE TABLE legislaturas (
   id_legislatura SERIAL PRIMARY KEY,
-  data_inicio DATE NOT NULL,
-  data_fim DATE NOT NULL
+  data_inicio DATE NOT NULL CONSTRAINT data_inicio_maior CHECK (data_inicio < data_fim),
+  data_fim DATE NOT NULL CONSTRAINT data_fim_menor CHECK (data_fim > data_inicio)
 );
 
 CREATE TABLE tipos_proposicao (
@@ -33,7 +34,7 @@ CREATE TABLE proposicoes (
   ementa_detalhada TEXT,
   texto TEXT,
   justificativa TEXT,
-  keywords VARCHAR(500) NOT NULL
+  keywords VARCHAR(500)
 );
 
 CREATE TABLE blocos (
@@ -111,3 +112,40 @@ CREATE TABLE inscricoes (
   id_deputado INTEGER REFERENCES deputados(id_deputado) NOT NULL,
   id_usuario INTEGER REFERENCES usuarios(id_usuario) NOT NULL
 );
+
+/* Funções & Gatilhos */
+CREATE FUNCTION testa_valor() RETURNS TRIGGER as $despesas_gatilho$
+BEGIN
+  -- Verifica valor minimo do documento
+  IF NEW.valor_documento <= 0 THEN
+    RAISE EXCEPTION 'Valor do documento deve ser maior que 0';
+  --
+  ELSEIF NEW.valor_documento > 44000 THEN
+    RAISE EXCEPTION 'Valor do documento deve ser menor que 44000';
+  END IF;
+
+  RETURN NEW;
+END;
+$despesas_gatilho$ LANGUAGE plpgsql;
+
+CREATE TRIGGER despesas_gatilho BEFORE INSERT OR UPDATE
+ON despesas
+FOR EACH ROW EXECUTE
+PROCEDURE testa_valor();
+
+CREATE FUNCTION testa_duracao() RETURNS TRIGGER as $legislaturas_gatilho$
+BEGIN
+  -- Verifica valor minimo do documento
+  IF ((DATE_PART('year', NEW.data_fim::date) - DATE_PART('year', NEW.data_inicio::date)) * 12 +
+    (DATE_PART('month', NEW.data_fim::date) - DATE_PART('month', NEW.data_inicio::date)))  > 48 THEN
+    RAISE EXCEPTION 'Duração de uma legislatura não pode ser maior que 4 anos.';
+  END IF;
+
+  RETURN NEW;
+END;
+$legislaturas_gatilho$ LANGUAGE plpgsql;
+
+CREATE TRIGGER legislaturas_gatilho BEFORE INSERT OR UPDATE
+ON legislaturas
+FOR EACH ROW EXECUTE
+PROCEDURE testa_duracao();

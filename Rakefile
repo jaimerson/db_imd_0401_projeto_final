@@ -41,5 +41,10 @@ namespace :db do
     end
   end
 
+  task :dump do
+    filepath = File.expand_path(File.join(__dir__, 'db', 'all.sql'))
+    `pg_dump --no-security-labels --no-owner -Fp -x --inserts -d #{database_url} -f #{filepath}`
+  end
+
   task reset: [:drop, :setup]
 end

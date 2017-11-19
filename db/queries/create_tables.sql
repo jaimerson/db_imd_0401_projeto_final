@@ -44,9 +44,7 @@ CREATE TABLE blocos (
 CREATE TABLE partidos (
   id_partido SERIAL PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
-  sigla VARCHAR(10) NOT NULL,
-  situacao VARCHAR(20) NOT NULL,
-  id_bloco INTEGER REFERENCES blocos(id_bloco) NOT NULL
+  sigla VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE gabinetes (

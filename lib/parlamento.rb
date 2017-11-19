@@ -19,6 +19,26 @@ class Parlamento
     @blocos ||= fetch_from_file_or_api('blocos')
   end
 
+  def despesas
+    if File.exist?(file_path('detalhes_despesas'))
+      JSON.parse(File.read(file_path('detalhes_despesas')))
+    else
+      results = deputados.map do |d|
+        despesa(d['id']) if d.is_a? Hash
+      end.compact
+
+      File.open(file_path('detalhes_despesas'), 'w+') do |file|
+        file.write(results.to_json)
+      end
+
+      results
+    end
+  end
+
+  def despesa(id)
+    fetch_from_file_or_api("deputados/#{id}/despesas", file_path("despesas/#{id}"))
+  end
+
   def detalhes_deputados
     if File.exist?(file_path('detalhes_deputados'))
       JSON.parse(File.read(file_path('detalhes_deputados')))
@@ -26,7 +46,7 @@ class Parlamento
       results = deputados.map do |d|
         deputado(d['id']) if d.is_a? Hash
       end.compact
-
+      puts "RESULTS #{results}"
       File.open(file_path('detalhes_deputados'), 'w+') do |file|
         file.write(results.to_json)
       end
@@ -55,7 +75,6 @@ class Parlamento
 
   def fetch_and_save(resource, filename = file_path(resource))
     results = to_json(fetch(resource))
-
     File.open(filename, 'w+') do |file|
       file.write(results)
     end
@@ -80,7 +99,6 @@ class Parlamento
       page = get(next_url['href'])
       results << page['dados']
     end
-
     results
   end
 

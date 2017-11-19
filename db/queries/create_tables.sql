@@ -45,17 +45,17 @@ CREATE TABLE blocos (
 CREATE TABLE partidos (
   id_partido SERIAL PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
-  sigla VARCHAR(10) NOT NULL
+  sigla VARCHAR(10) NOT NULL UNIQUE
 );
 
 CREATE TABLE gabinetes (
   id_gabinete SERIAL PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
-  predio INTEGER NOT NULL,
-  sala INTEGER NOT NULL,
-  andar INTEGER NOT NULL,
-  telefone VARCHAR(16) NOT NULL,
-  email VARCHAR(24) NOT NULL
+  predio VARCHAR(30),
+  sala VARCHAR(30),
+  andar VARCHAR(30),
+  telefone VARCHAR(16),
+  email VARCHAR(100)
 );
 
 CREATE TABLE deputados (
@@ -63,14 +63,13 @@ CREATE TABLE deputados (
   nome_civil VARCHAR(255) NOT NULL,
   nome VARCHAR(255) NOT NULL,
   cpf VARCHAR(15) NOT NULL,
-  sexo CHAR(1) NOT NULL,
-  siglaUf CHAR(2) NOT NULL,
-  url_website VARCHAR(128) NOT NULL,
-  situacao VARCHAR(64) NOT NULL,
-  data_nascimento DATE NOT NULL,
+  sexo CHAR(1),
+  url_website VARCHAR(128),
+  situacao VARCHAR(64),
+  data_nascimento DATE,
   escolaridade VARCHAR(64),
-  id_partido INTEGER REFERENCES partidos(id_partido) NOT NULL,
-  id_gabinete INTEGER REFERENCES gabinete(id_gabinete) NOT NULL
+  id_partido VARCHAR(10) REFERENCES partidos(sigla) NOT NULL,
+  id_gabinete INTEGER REFERENCES gabinetes(id_gabinete) NOT NULL
 );
 
 CREATE TABLE despesas (

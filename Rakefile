@@ -9,7 +9,13 @@ namespace :data do
     parlamento.legislaturas
     parlamento.tipos_proposicao
     parlamento.blocos
+    parlamento.despesas
   end
+  task :fetch_deputados do
+    parlamento = Parlamento.new
+    parlamento.deputados
+  end
+
 end
 
 namespace :db do
@@ -18,6 +24,8 @@ namespace :db do
       puts "Connecting to #{database_url}..."
       puts 'Creating tables...'
       db.run(File.read('db/queries/create_tables.sql'))
+      puts 'Creating functions...'
+      db.run(File.read('db/queries/functions.sql'))
       puts 'Done!'
     end
   end

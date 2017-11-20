@@ -132,3 +132,34 @@ BEGIN TRANSACTION;
   SELECT add_deputado_by_file();
 END TRANSACTION;
 -- importa despesas
+
+-- importa proposicoes
+BEGIN TRANSACTION;
+
+CREATE TEMPORARY TABLE temp_json (values TEXT) ON COMMIT DROP;
+COPY temp_json FROM '<%= File.expand_path(File.join(__dir__, 'data', 'proposicoes.json')) %>'
+CSV quote e'\x01' delimiter e'\x02';
+
+-- edit the <%# ... %> for the absolute path if needed
+
+INSERT INTO proposicoes (id_proposicao, id_tipo_proposicao, numero, ano, ementa,
+data_apresentacao, situacao, tipo_autor, ementa_detalhada, texto, justificativa, keywords)
+SELECT (values->>'id')::int AS id_proposicao,
+        (values->>'idTipo')::int AS id_tipo_proposicao,
+        (values->>'numero')::int AS numero,
+        (values->>'ano')::int AS ano,
+        values->>'ementa',
+        (values->>'dataApresentacao')::date AS data_apresentacao,
+        (values->'statusProposicao'->>'descricaoSituacao') AS situacao,
+        values->>'tipoAutor' AS tipo_autor,
+        values->>'ementaDetalhada' AS ementa_detalhada,
+        values->>'texto',
+        values->>'justificativa',
+        values->>'keywords'
+FROM (
+  SELECT json_array_elements(values::json) AS values
+  FROM temp_json
+) elements;
+
+END TRANSACTION;
+-- importa proposicoes

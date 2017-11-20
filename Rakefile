@@ -10,6 +10,7 @@ namespace :data do
     parlamento.tipos_proposicao
     parlamento.blocos
     parlamento.despesas
+    parlamento.detalhes_proposicoes
   end
   task :fetch_deputados do
     parlamento = Parlamento.new

@@ -4,7 +4,9 @@ class Parlamento
   BASE_URL = "https://dadosabertos.camara.leg.br/api/v2/%s?itens=100".freeze
 
   def deputados
-    @deputados ||= fetch_from_file_or_api('deputados')
+    @deputados ||= fetch_from_file_or_api('deputados', file_path('deputados'), {
+        siglaUf: 'RN'
+    })
   end
 
   def legislaturas
@@ -17,6 +19,33 @@ class Parlamento
 
   def blocos
     @blocos ||= fetch_from_file_or_api('blocos')
+  end
+
+  def proposicoes
+    @deputados ||= fetch_from_file_or_api('proposicoes', file_path('proposicoes'), {
+      siglaUfAutor: 'RN',
+      ano: 2017
+    })
+  end
+
+  def detalhes_proposicoes
+    if File.exist?(file_path('detalhes_proposicoes'))
+      JSON.parse(File.read(file_path('detalhes_proposicoes')))
+    else
+      results = proposicoes.map do |d|
+        proposicao(d['id']) if d.is_a? Hash
+      end.compact
+
+      File.open(file_path('detalhes_proposicoes'), 'w+') do |file|
+        file.write(results.to_json)
+      end
+
+      results
+    end
+  end
+
+  def proposicao(id)
+    fetch_from_file_or_api("proposicoes/#{id}")
   end
 
   def despesas
@@ -46,7 +75,7 @@ class Parlamento
       results = deputados.map do |d|
         deputado(d['id']) if d.is_a? Hash
       end.compact
-      puts "RESULTS #{results}"
+
       File.open(file_path('detalhes_deputados'), 'w+') do |file|
         file.write(results.to_json)
       end
@@ -61,11 +90,11 @@ class Parlamento
 
   private
 
-  def fetch_from_file_or_api(resource, filename = file_path(resource))
+  def fetch_from_file_or_api(resource, filename = file_path(resource), params = {})
     if File.exist?(filename)
       JSON.parse(File.read(filename))
     else
-      fetch_and_save(resource, filename)
+      fetch_and_save(resource, filename, params)
     end
   end
 
@@ -73,8 +102,8 @@ class Parlamento
     File.join(__dir__, '..', 'data', "#{resource}.json")
   end
 
-  def fetch_and_save(resource, filename = file_path(resource))
-    results = fetch(resource)
+  def fetch_and_save(resource, filename = file_path(resource), params = {})
+    results = fetch(resource, params)
     # results = to_json(fetch(resource))
     File.open(filename, 'w+') do |file|
       file.write(results.to_json)
@@ -91,13 +120,13 @@ class Parlamento
     end.to_json
   end
 
-  def fetch(resource)
-    page = get(format(BASE_URL, resource))
+  def fetch(resource, params = {})
+    page = get(format(BASE_URL, resource), params)
     results = page['dados']
 
     while page['links'] && next_url = page['links'].find { |x| x['rel'] == 'next' } do
       sleep 3
-      page = get(next_url['href'])
+      page = get(next_url['href'], params)
       results << page['dados']
     end
     results

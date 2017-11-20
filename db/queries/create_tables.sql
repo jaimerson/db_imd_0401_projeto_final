@@ -63,6 +63,7 @@ CREATE TABLE deputados (
   nome VARCHAR(255) NOT NULL,
   cpf VARCHAR(15) NOT NULL,
   sexo CHAR(1) NOT NULL,
+  siglaUf CHAR(2) NOT NULL,
   url_website VARCHAR(128) NOT NULL,
   situacao VARCHAR(64) NOT NULL,
   data_nascimento DATE NOT NULL,

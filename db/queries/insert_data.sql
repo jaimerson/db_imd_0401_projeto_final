@@ -163,3 +163,29 @@ FROM (
 
 END TRANSACTION;
 -- importa proposicoes
+
+-- adiciona usuarios
+BEGIN TRANSACTION;
+INSERT INTO usuarios (nome, data_nascimento, email, password_digest)
+VALUES ('Diego Oliveira', '1991-02-28', 'diegol@gmail.com', '123456'),
+('Maria Luiza', '1990-12-05', 'maria@gmail.com', '654321');
+END TRANSACTION;
+-- adiciona usuarios
+
+-- usuario impares seguem politicos impares
+BEGIN TRANSACTION;
+INSERT INTO inscricoes (id_deputado, id_usuario)
+SELECT id_deputado, id_usuario FROM usuarios
+  JOIN deputados
+  ON (((id_usuario % 2) = 0 AND (id_deputado % 2) = 0) OR
+      ((id_usuario % 2) <> 0 AND (id_deputado % 2) <> 0));
+END TRANSACTION;
+-- usuario impares seguem politicos impares
+
+-- adiciona mandatos
+BEGIN TRANSACTION;
+INSERT INTO mandatos (id_deputado, id_legislatura)
+SELECT id_deputado, id_legislatura FROM deputados
+  JOIN legislaturas ON data_fim > now()::date;
+END TRANSACTION;
+-- adiciona mandatos

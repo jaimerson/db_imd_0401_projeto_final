@@ -26,7 +26,9 @@ namespace :db do
       puts 'Creating tables...'
       db.run(File.read('db/queries/create_tables.sql'))
       puts 'Creating functions...'
-      db.run(File.read('db/queries/functions.sql'))
+      db.run(File.read('db/queries/create_functions.sql'))
+      puts 'Creating views...'
+      db.run(File.read('db/queries/create_views.sql'))
       puts 'Done!'
     end
   end
@@ -46,6 +48,8 @@ namespace :db do
       puts "Connecting to #{database_url}..."
       puts 'Nuking tables...'
       db.run(File.read('db/queries/drop_tables.sql'))
+      puts 'Nuking functions...'
+      db.run(File.read('db/queries/drop_functions.sql'))
       puts 'Done!'
     end
   end

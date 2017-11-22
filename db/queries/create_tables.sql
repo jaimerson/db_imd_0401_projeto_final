@@ -1,3 +1,4 @@
+/* DDL */
 /* Tabelas principais */
 CREATE TABLE usuarios (
   id_usuario SERIAL PRIMARY KEY,
@@ -10,8 +11,8 @@ CREATE TABLE usuarios (
 
 CREATE TABLE legislaturas (
   id_legislatura SERIAL PRIMARY KEY,
-  data_inicio DATE NOT NULL,
-  data_fim DATE NOT NULL
+  data_inicio DATE NOT NULL CONSTRAINT data_inicio_maior CHECK (data_inicio < data_fim),
+  data_fim DATE NOT NULL CONSTRAINT data_fim_menor CHECK (data_fim > data_inicio)
 );
 
 CREATE TABLE tipos_proposicao (
@@ -24,16 +25,16 @@ CREATE TABLE tipos_proposicao (
 CREATE TABLE proposicoes (
   id_proposicao SERIAL PRIMARY KEY,
   id_tipo_proposicao INTEGER REFERENCES tipos_proposicao(id_tipo_proposicao) NOT NULL,
-  numero INTEGER NOT NULL,
-  ano INTEGER CONSTRAINT year CHECK (ano BETWEEN 1000 AND 9999) NOT NULL,
-  ementa TEXT NOT NULL,
-  data_apresentacao DATE NOT NULL,
-  status JSONB NOT NULL,
-  tipo_autor VARCHAR(100) NOT NULL,
+  numero INTEGER,
+  ano INTEGER CONSTRAINT year CHECK (ano BETWEEN 1000 AND 9999),
+  ementa TEXT,
+  data_apresentacao DATE,
+  situacao VARCHAR(500),
+  tipo_autor VARCHAR(100),
   ementa_detalhada TEXT,
   texto TEXT,
   justificativa TEXT,
-  keywords VARCHAR(500) NOT NULL
+  keywords VARCHAR(500)
 );
 
 CREATE TABLE blocos (
@@ -44,17 +45,17 @@ CREATE TABLE blocos (
 CREATE TABLE partidos (
   id_partido SERIAL PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
-  sigla VARCHAR(10) NOT NULL
+  sigla VARCHAR(10) NOT NULL UNIQUE
 );
 
 CREATE TABLE gabinetes (
   id_gabinete SERIAL PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
-  predio INTEGER NOT NULL,
-  sala INTEGER NOT NULL,
-  andar INTEGER NOT NULL,
-  telefone VARCHAR(16) NOT NULL,
-  email VARCHAR(24) NOT NULL
+  predio VARCHAR(30),
+  sala VARCHAR(30),
+  andar VARCHAR(30),
+  telefone VARCHAR(16),
+  email VARCHAR(100)
 );
 
 CREATE TABLE deputados (
@@ -62,26 +63,26 @@ CREATE TABLE deputados (
   nome_civil VARCHAR(255) NOT NULL,
   nome VARCHAR(255) NOT NULL,
   cpf VARCHAR(15) NOT NULL,
-  sexo CHAR(1) NOT NULL,
-  siglaUf CHAR(2) NOT NULL,
-  url_website VARCHAR(128) NOT NULL,
-  situacao VARCHAR(64) NOT NULL,
-  data_nascimento DATE NOT NULL,
+  sexo CHAR(1),
+  sigla_uf CHAR(3),
+  url_website VARCHAR(128),
+  situacao VARCHAR(64),
+  data_nascimento DATE,
   escolaridade VARCHAR(64),
-  id_partido INTEGER REFERENCES partidos(id_partido) NOT NULL,
-  id_gabinete INTEGER REFERENCES gabinete(id_gabinete) NOT NULL
+  id_partido VARCHAR(10) REFERENCES partidos(sigla) NOT NULL,
+  id_gabinete INTEGER REFERENCES gabinetes(id_gabinete) NOT NULL
 );
 
 CREATE TABLE despesas (
   id_despesa SERIAL PRIMARY KEY,
-  ano DATE NOT NULL,
-  cnpj_cpf_fornecedor VARCHAR(24) NOT NULL,
+  ano VARCHAR(4) NOT NULL,
+  cnpj_cpf_fornecedor VARCHAR(100) NOT NULL,
   data_documento DATE NOT NULL,
-  tipo_documento VARCHAR(24) NOT NULL,
-  mes INTEGER NOT NULL,
-  nome_fornecedor VARCHAR(24) NOT NULL,
-  num_documento INTEGER NOT NULL,
-  num_ressarcimento INTEGER NOT NULL,
+  tipo_documento VARCHAR(100) NOT NULL,
+  mes VARCHAR(3) NOT NULL,
+  nome_fornecedor VARCHAR(100) NOT NULL,
+  num_documento VARCHAR(40) NOT NULL,
+  num_ressarcimento VARCHAR(40) NOT NULL,
   parcela INTEGER NOT NULL,
   tipo_despesa VARCHAR(64) NOT NULL,
   url_documento VARCHAR(64) NOT NULL,

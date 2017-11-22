@@ -9,15 +9,28 @@ namespace :data do
     parlamento.legislaturas
     parlamento.tipos_proposicao
     parlamento.blocos
+    parlamento.despesas
+    parlamento.detalhes_proposicoes
   end
+  task :fetch_deputados do
+    parlamento = Parlamento.new
+    parlamento.deputados
+  end
+
 end
 
 namespace :db do
   task :setup do
     Sequel.connect(database_url) do |db|
       puts "Connecting to #{database_url}..."
-      puts 'Creating tables...'
-      db.run(File.read('db/queries/create_tables.sql'))
+
+      %w[tables functions views].each do |resource|
+        puts "Creating #{resource}..."
+        query = ERB.new(File.read("db/queries/create_#{resource}.sql")).result(binding)
+        puts query
+        db.run(query)
+      end
+
       puts 'Done!'
     end
   end
@@ -37,6 +50,8 @@ namespace :db do
       puts "Connecting to #{database_url}..."
       puts 'Nuking tables...'
       db.run(File.read('db/queries/drop_tables.sql'))
+      puts 'Nuking functions...'
+      db.run(File.read('db/queries/drop_functions.sql'))
       puts 'Done!'
     end
   end

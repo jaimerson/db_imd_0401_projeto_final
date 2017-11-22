@@ -22,7 +22,7 @@ class Parlamento
   end
 
   def proposicoes
-    @deputados ||= fetch_from_file_or_api('proposicoes', file_path('proposicoes'), {
+    @proposicoes ||= fetch_from_file_or_api('proposicoes', file_path('proposicoes'), {
       siglaUfAutor: 'RN',
       ano: 2017
     })
@@ -44,10 +44,6 @@ class Parlamento
     end
   end
 
-  def proposicao(id)
-    fetch_from_file_or_api("proposicoes/#{id}")
-  end
-
   def despesas
     if File.exist?(file_path('detalhes_despesas'))
       JSON.parse(File.read(file_path('detalhes_despesas')))
@@ -62,10 +58,6 @@ class Parlamento
 
       results
     end
-  end
-
-  def despesa(id)
-    fetch_from_file_or_api("deputados/#{id}/despesas", file_path("despesas/#{id}"))
   end
 
   def detalhes_deputados
@@ -84,11 +76,19 @@ class Parlamento
     end
   end
 
+  private
+
+  def despesa(id)
+    fetch_from_file_or_api("deputados/#{id}/despesas", file_path("despesas/#{id}"))
+  end
+
   def deputado(id)
     fetch_from_file_or_api("deputados/#{id}")
   end
 
-  private
+  def proposicao(id)
+    fetch_from_file_or_api("proposicoes/#{id}")
+  end
 
   def fetch_from_file_or_api(resource, filename = file_path(resource), params = {})
     if File.exist?(filename)

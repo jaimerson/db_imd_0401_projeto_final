@@ -5,13 +5,9 @@ require_relative 'lib/parlamento'
 namespace :data do
   task :fetch_all do
     parlamento = Parlamento.new
-    parlamento.detalhes_deputados
-    parlamento.legislaturas
-    parlamento.tipos_proposicao
-    parlamento.blocos
-    parlamento.despesas
-    parlamento.detalhes_proposicoes
+    parlamento.public_methods(false).each { |m| parlamento.send(m) }
   end
+
   task :fetch_deputados do
     parlamento = Parlamento.new
     parlamento.deputados
@@ -35,7 +31,7 @@ namespace :db do
     end
   end
 
-  task :setup_data do
+  task setup_data: ['data:fetch_all'] do
     Sequel.connect(database_url) do |db|
       puts "Connecting to #{database_url}..."
       query = ERB.new(File.read('db/queries/insert_data.sql')).result(binding)

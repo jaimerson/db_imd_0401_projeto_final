@@ -9,6 +9,10 @@ class Parlamento
     })
   end
 
+  def partidos
+    @partidos ||= fetch_from_file_or_api('partidos')
+  end
+
   def legislaturas
     @legislaturas ||= fetch_from_file_or_api('legislaturas')
   end

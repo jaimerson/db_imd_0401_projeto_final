@@ -129,7 +129,7 @@ END TRANSACTION;
 
 -- importa despesas
 BEGIN TRANSACTION;
-  SELECT add_deputado_by_file();
+  SELECT add_despesas_by_file();
 END TRANSACTION;
 -- importa despesas
 

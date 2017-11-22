@@ -23,12 +23,14 @@ namespace :db do
   task :setup do
     Sequel.connect(database_url) do |db|
       puts "Connecting to #{database_url}..."
-      puts 'Creating tables...'
-      db.run(File.read('db/queries/create_tables.sql'))
-      puts 'Creating functions...'
-      db.run(File.read('db/queries/create_functions.sql'))
-      puts 'Creating views...'
-      db.run(File.read('db/queries/create_views.sql'))
+
+      %w[tables functions views].each do |resource|
+        puts "Creating #{resource}..."
+        query = ERB.new(File.read("db/queries/create_#{resource}.sql")).result(binding)
+        puts query
+        db.run(query)
+      end
+
       puts 'Done!'
     end
   end

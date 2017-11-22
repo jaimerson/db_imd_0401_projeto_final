@@ -20,14 +20,14 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION add_despesas_by_file()
 RETURNS void AS $$
 DECLARE
-	deputado RECORD;
+  deputado RECORD;
 BEGIN
     FOR deputado IN SELECT id_deputado FROM deputados d
     LOOP
         CREATE TEMPORARY TABLE temp_json (values TEXT) ON COMMIT DROP;
-        EXECUTE 'COPY temp_json FROM ' || E'\'/Users/diego/Projects/meudeputado/data/despesas/' || deputado.id_deputado::text ||
-        E'.json\'';
-        --|| ' CSV quote ' || E'\'\x01\'' || 'delimiter' || E'\'\x02\'';
+        EXECUTE 'COPY temp_json FROM ' || E'\'<%= File.expand_path(File.join(__dir__, "data", "despesas")) %>/' || deputado.id_deputado::text ||
+        E'.json\''
+        || ' CSV quote ' || E'\'\x01\'' || 'delimiter' || E'\'\x02\'';
 
         -- edit the <%# ... %> for the absolute path if needed
 
@@ -84,8 +84,7 @@ PROCEDURE testa_valor();
 CREATE FUNCTION testa_duracao() RETURNS TRIGGER as $legislaturas_gatilho$
 BEGIN
   -- Verifica valor minimo do documento
-  IF ((DATE_PART('year', NEW.data_fim::date) - DATE_PART('year', NEW.data_inicio::date)) * 12 +
-    (DATE_PART('month', NEW.data_fim::date) - DATE_PART('month', NEW.data_inicio::date)))  > 48 THEN
+  IF DATE_PART('year', age(NEW.data_fim::date, NEW.data_inicio::date)) > 4 THEN
     RAISE NOTICE 'Duração de uma legislatura não pode ser maior que 4 anos.';
   END IF;
 
